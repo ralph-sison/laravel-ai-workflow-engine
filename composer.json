@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/telescope": "^5.20",
         "laravel/tinker": "^2.9",
+        "openai-php/client": "^0.20.0",
         "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {

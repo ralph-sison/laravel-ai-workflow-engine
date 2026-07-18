@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Controllers\Api\V1\ConnectorController;
 use App\Http\Controllers\Api\V1\ExecutionController;
 use App\Http\Controllers\Api\V1\WorkflowController;
 use App\Http\Controllers\Api\V1\WorkflowStepController;
@@ -40,6 +41,14 @@ Route::prefix('v1')->group(function () {
         Route::get('workflows/{workflow}/executions', [ExecutionController::class, 'index']);
         Route::get('workflows/{workflow}/executions/{execution}', [ExecutionController::class, 'show']);
         Route::post('workflows/{workflow}/executions/{execution}/retry', [ExecutionController::class, 'retry']);
+
+        // Connectors
+        Route::get('connectors', [ConnectorController::class, 'index']);
+        Route::post('connectors', [ConnectorController::class, 'store']);
+        Route::get('connectors/{connector}', [ConnectorController::class, 'show']);
+        Route::put('connectors/{connector}', [ConnectorController::class, 'update']);
+        Route::delete('connectors/{connector}', [ConnectorController::class, 'destroy']);
+        Route::post('connectors/{connector}/test', [ConnectorController::class, 'test']);
     });
 
 });
