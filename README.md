@@ -79,7 +79,7 @@ Current milestone: **v0.1.0** — Auth, multi-tenancy, RBAC, tenant onboarding.
 > Requires: Docker, Docker Compose, Git
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/laravel-ai-workflow-engine.git
+git clone https://github.com/ralph-sison/laravel-ai-workflow-engine.git
 cd laravel-ai-workflow-engine
 cp .env.example .env
 docker compose up -d
