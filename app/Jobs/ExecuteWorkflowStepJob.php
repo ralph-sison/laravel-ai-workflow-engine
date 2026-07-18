@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\AI\AiProviderFactory;
+use App\Actions\Workflow\SendNotificationAction;
 use App\Models\Execution;
 use App\Models\ExecutionLog;
 use App\Models\WorkflowStep;
@@ -89,10 +90,11 @@ class ExecuteWorkflowStepJob implements ShouldQueue
     private function runStep(WorkflowStep $step, array $context): array
     {
         return match ($step->type) {
-            'ai'        => $this->runAiStep($step, $context),
-            'transform' => ['step_result' => "Transform step [{$step->name}] executed"],
-            'http'      => ['step_result' => "HTTP step [{$step->name}] executed"],
-            default     => ['step_result' => "Step [{$step->name}] executed (type: {$step->type})"],
+            'ai'           => $this->runAiStep($step, $context),
+            'notification' => app(SendNotificationAction::class)->execute($step, $context),
+            'transform'    => ['step_result' => "Transform step [{$step->name}] executed"],
+            'http'         => ['step_result' => "HTTP step [{$step->name}] executed"],
+            default        => ['step_result' => "Step [{$step->name}] executed (type: {$step->type})"],
         };
     }
 

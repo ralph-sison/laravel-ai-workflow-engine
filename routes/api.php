@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ConnectorController;
 use App\Http\Controllers\Api\V1\ExecutionController;
+use App\Http\Controllers\Api\V1\ScheduledTriggerController;
 use App\Http\Controllers\Api\V1\WebhookController;
 use App\Http\Controllers\Api\V1\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\WorkflowController;
@@ -59,6 +60,13 @@ Route::prefix('v1')->group(function () {
         Route::put('webhook-endpoints/{webhookEndpoint}', [WebhookEndpointController::class, 'update']);
         Route::delete('webhook-endpoints/{webhookEndpoint}', [WebhookEndpointController::class, 'destroy']);
         Route::post('webhook-endpoints/{webhookEndpoint}/regenerate-secret', [WebhookEndpointController::class, 'regenerateSecret']);
+
+        // Scheduled triggers
+        Route::get('scheduled-triggers', [ScheduledTriggerController::class, 'index']);
+        Route::post('scheduled-triggers', [ScheduledTriggerController::class, 'store']);
+        Route::get('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'show']);
+        Route::put('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'update']);
+        Route::delete('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'destroy']);
     });
 
     // Public webhook receiver — no auth, HMAC verified

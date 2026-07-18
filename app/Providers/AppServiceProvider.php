@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Connector;
+use App\Models\ScheduledTrigger;
 use App\Models\WebhookEndpoint;
 use App\Models\Workflow;
 use App\Policies\ConnectorPolicy;
+use App\Policies\ScheduledTriggerPolicy;
 use App\Policies\WebhookEndpointPolicy;
 use App\Policies\WorkflowPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -23,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Workflow::class, WorkflowPolicy::class);
         Gate::policy(Connector::class, ConnectorPolicy::class);
         Gate::policy(WebhookEndpoint::class, WebhookEndpointPolicy::class);
+        Gate::policy(ScheduledTrigger::class, ScheduledTriggerPolicy::class);
     }
 }
