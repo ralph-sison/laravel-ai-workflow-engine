@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ConnectorController;
 use App\Http\Controllers\Api\V1\ExecutionController;
+use App\Http\Controllers\Api\V1\WebhookController;
+use App\Http\Controllers\Api\V1\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\WorkflowController;
 use App\Http\Controllers\Api\V1\WorkflowStepController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,18 @@ Route::prefix('v1')->group(function () {
         Route::put('connectors/{connector}', [ConnectorController::class, 'update']);
         Route::delete('connectors/{connector}', [ConnectorController::class, 'destroy']);
         Route::post('connectors/{connector}/test', [ConnectorController::class, 'test']);
+
+        // Webhook endpoint management (authenticated)
+        Route::get('webhook-endpoints', [WebhookEndpointController::class, 'index']);
+        Route::post('webhook-endpoints', [WebhookEndpointController::class, 'store']);
+        Route::get('webhook-endpoints/{webhookEndpoint}', [WebhookEndpointController::class, 'show']);
+        Route::put('webhook-endpoints/{webhookEndpoint}', [WebhookEndpointController::class, 'update']);
+        Route::delete('webhook-endpoints/{webhookEndpoint}', [WebhookEndpointController::class, 'destroy']);
+        Route::post('webhook-endpoints/{webhookEndpoint}/regenerate-secret', [WebhookEndpointController::class, 'regenerateSecret']);
     });
+
+    // Public webhook receiver — no auth, HMAC verified
+    Route::post('webhooks/{slug}', [WebhookController::class, 'receive']);
+    Route::get('webhooks/{slug}', [WebhookController::class, 'receive']);
 
 });
