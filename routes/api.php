@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function () {
         // Executions
         Route::get('workflows/{workflow}/executions', [ExecutionController::class, 'index']);
         Route::get('workflows/{workflow}/executions/{execution}', [ExecutionController::class, 'show']);
+        Route::post('workflows/{workflow}/executions/{execution}/retry', [ExecutionController::class, 'retry']);
     });
 
 });
