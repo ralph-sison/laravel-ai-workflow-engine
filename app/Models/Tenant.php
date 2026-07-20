@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Laravel\Cashier\Billable;
 
 class Tenant extends Model
 {
-    use HasUuids, SoftDeletes;
+    use Billable, HasUuids, SoftDeletes;
 
     protected $fillable = [
         'name',

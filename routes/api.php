@@ -4,10 +4,13 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ConnectorController;
 use App\Http\Controllers\Api\V1\ExecutionController;
 use App\Http\Controllers\Api\V1\ScheduledTriggerController;
+use App\Http\Controllers\Api\V1\StripeWebhookController;
+use App\Http\Controllers\Api\V1\SubscriptionController;
 use App\Http\Controllers\Api\V1\WebhookController;
 use App\Http\Controllers\Api\V1\WebhookEndpointController;
 use App\Http\Controllers\Api\V1\WorkflowController;
 use App\Http\Controllers\Api\V1\WorkflowStepController;
+use App\Http\Middleware\EnforcePlanLimits;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -31,7 +34,6 @@ Route::prefix('v1')->group(function () {
         Route::delete('workflows/{workflow}', [WorkflowController::class, 'destroy']);
         Route::post('workflows/{workflow}/activate', [WorkflowController::class, 'activate']);
         Route::post('workflows/{workflow}/pause', [WorkflowController::class, 'pause']);
-        Route::post('workflows/{workflow}/execute', [WorkflowController::class, 'execute']);
 
         // Workflow steps
         Route::get('workflows/{workflow}/steps', [WorkflowStepController::class, 'index']);
@@ -67,10 +69,23 @@ Route::prefix('v1')->group(function () {
         Route::get('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'show']);
         Route::put('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'update']);
         Route::delete('scheduled-triggers/{scheduledTrigger}', [ScheduledTriggerController::class, 'destroy']);
+
+        // Billing & subscription
+        Route::get('billing', [SubscriptionController::class, 'index']);
+        Route::post('billing/checkout', [SubscriptionController::class, 'checkout']);
+        Route::post('billing/portal', [SubscriptionController::class, 'portal']);
+        Route::post('billing/cancel', [SubscriptionController::class, 'cancel']);
+
+        // Plan-gated: workflow execution
+        Route::post('workflows/{workflow}/execute', [WorkflowController::class, 'execute'])
+            ->middleware(EnforcePlanLimits::class);
     });
 
     // Public webhook receiver — no auth, HMAC verified
     Route::post('webhooks/{slug}', [WebhookController::class, 'receive']);
     Route::get('webhooks/{slug}', [WebhookController::class, 'receive']);
+
+    // Stripe webhook — verified by Cashier using STRIPE_WEBHOOK_SECRET
+    Route::post('stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
 });
