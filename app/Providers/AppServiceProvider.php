@@ -12,6 +12,7 @@ use App\Policies\WebhookEndpointPolicy;
 use App\Policies\WorkflowPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Billing is per-tenant, not per-user
+        Cashier::useCustomerModel(\App\Models\Tenant::class);
+
         Gate::policy(Workflow::class, WorkflowPolicy::class);
         Gate::policy(Connector::class, ConnectorPolicy::class);
         Gate::policy(WebhookEndpoint::class, WebhookEndpointPolicy::class);
