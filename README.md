@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql)](https://postgresql.org)
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker)](https://docker.com)
-[![Tests](https://img.shields.io/badge/tests-68%20passing-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-79%20passing-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ---
@@ -146,6 +146,27 @@ All endpoints are prefixed with `/api/v1/`. Authenticated routes require a Sanct
 | GET/POST | `/scheduled-triggers` | List / create |
 | GET/PUT/DELETE | `/scheduled-triggers/{id}` | Get / update / delete |
 
+### Billing & Subscriptions
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/billing` | Current plan, subscription status, live usage, all plan limits |
+| POST | `/billing/checkout` | Create Stripe Checkout session for upgrade |
+| POST | `/billing/portal` | Create Stripe Billing Portal session |
+| POST | `/billing/cancel` | Cancel subscription at period end |
+| POST | `/stripe/webhook` | **Public** — Stripe event receiver (signature verified) |
+
+---
+
+## Subscription Plans
+
+| Plan | Workflows | Executions / month | AI steps / month |
+|---|---|---|---|
+| Free | 3 | 100 | 20 |
+| Pro | 25 | 5,000 | 1,000 |
+| Enterprise | Unlimited | Unlimited | Unlimited |
+
+Execution limits are enforced at the API level — requests over the monthly limit return `402` with the current plan in the response body.
+
 ---
 
 ## Workflow Step Types
@@ -185,8 +206,8 @@ Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async
 | v0.4.0 | AI provider abstraction (OpenAI, Claude, Ollama) | ✅ Done |
 | v0.5.0 | Inbound webhooks with HMAC verification | ✅ Done |
 | v0.6.0 | Scheduled triggers, notification steps | ✅ Done |
-| v0.7.0 | Stripe billing, subscription plans, usage metering | 🔨 Next |
-| v0.8.0 | React frontend — workflow builder UI | 📋 Planned |
+| v0.7.0 | Stripe billing, subscription plans, usage metering | ✅ Done |
+| v0.8.0 | React frontend — workflow builder UI | 🔨 Next |
 | v0.9.0 | Flutter mobile app | 📋 Planned |
 | v1.0.0 | CI/CD, Railway/AWS deployment, OpenAPI docs | 📋 Planned |
 
