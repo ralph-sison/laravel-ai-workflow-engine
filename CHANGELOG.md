@@ -9,10 +9,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 ## [Unreleased]
 
 ### Planned
-- Stripe subscription billing and usage metering (v0.7.0) — [#8](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/8)
 - React workflow builder UI (v0.8.0) — [#9](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/9)
 - Flutter mobile app (v0.9.0) — [#10](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/10)
 - Production deployment, CI/CD, monitoring, OpenAPI docs (v1.0.0) — [#11](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/11)
+
+---
+
+## [0.7.0] — 2026-07-20
+
+### Added
+- **Laravel Cashier v16.6** — Stripe billing integrated; billing scoped to `Tenant` (not `User`) via `Cashier::useCustomerModel(Tenant::class)`
+- **`Plans` class** — defines limits per plan tier:
+  - `free`: 3 workflows, 100 executions/month, 20 AI steps/month
+  - `pro`: 25 workflows, 5,000 executions/month, 1,000 AI steps/month
+  - `enterprise`: unlimited across all dimensions
+- **`UsageService`** — counts executions and workflows for the current billing period; `canExecute()` and `canCreateWorkflow()` enforce plan limits against live DB counts
+- **`EnforcePlanLimits` middleware** — gates `POST /workflows/{id}/execute`; returns `402` with plan context when the monthly execution limit is reached
+- **`SubscriptionController`**:
+  - `GET /billing` — current plan, subscription status, live usage summary, all plan limit tiers
+  - `POST /billing/checkout` — creates a Stripe Checkout session for upgrade
+  - `POST /billing/portal` — creates a Stripe Billing Portal session for self-service management
+  - `POST /billing/cancel` — cancels subscription at period end
+- **`StripeWebhookController`** — extends Cashier's built-in webhook handler; syncs `tenant.plan` on `customer.subscription.created`, `updated`, and `deleted` Stripe events
+- **Cashier migrations** adapted: `subscriptions.user_id` → `tenant_id` (UUID FK) since billing is per-organisation
+- `STRIPE_PRICE_PRO` and `STRIPE_PRICE_ENTERPRISE` added to `.env.example`
+
+### Design decision
+Billing is per-**tenant** (organisation), not per-user. A team shares one subscription. Matches standard B2B SaaS billing and defers per-seat complexity to a future milestone.
+
+### Tests
+- 11 new tests — plan limit enforcement, usage counting (current month only), enterprise unlimited bypass, billing index shape
+- **Total: 79 tests, 210 assertions**
 
 ---
 
