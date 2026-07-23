@@ -7,7 +7,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql)](https://postgresql.org)
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker)](https://docker.com)
-[![Tests](https://img.shields.io/badge/tests-79%20passing-brightgreen)](#testing)
+[![Tests](https://img.shields.io/badge/tests-93%20passing-brightgreen)](#testing)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ---
@@ -36,7 +36,7 @@ Workflows can be triggered **manually**, by **inbound webhooks** (with HMAC veri
 | Layer | Technology |
 |---|---|
 | Backend | Laravel 11, PHP 8.3 |
-| Frontend | React / Inertia.js (v0.8.0) |
+| Frontend | React 18 + TypeScript + Inertia.js |
 | Mobile | Flutter (v0.9.0) |
 | Database | PostgreSQL 16 |
 | Cache & Queues | Redis 7 + Laravel Horizon |
@@ -44,7 +44,7 @@ Workflows can be triggered **manually**, by **inbound webhooks** (with HMAC veri
 | AI | OpenAI, Anthropic Claude, Ollama (local Docker) |
 | Billing | Stripe — Laravel Cashier, test mode (v0.7.0) |
 | Notifications | Mail, Slack webhook, Laravel log |
-| Testing | PHPUnit — 68 tests, 183 assertions |
+| Testing | PHPUnit — 93 tests, 289 assertions |
 | Containers | Docker, Docker Compose |
 | CI/CD | GitHub Actions (v1.0.0) |
 | Deployment | Railway / AWS (v1.0.0) |
@@ -169,6 +169,33 @@ Execution limits are enforced at the API level — requests over the monthly lim
 
 ---
 
+## Frontend
+
+The web UI is built with **React 18 + TypeScript + Inertia.js** — no separate SPA, routing stays in Laravel.
+
+| Route | Page | Description |
+|---|---|---|
+| `/login` | `Auth/Login` | Email/password sign in |
+| `/register` | `Auth/Register` | Create organisation + owner account |
+| `/dashboard` | `Dashboard` | Stats, plan usage, recent executions |
+| `/workflows` | `Workflows/Index` | List all workflows with status badges |
+| `/workflows/create` | `Workflows/Create` | Create a new workflow |
+| `/workflows/{id}` | `Workflows/Show` | Steps, execution history, run/pause/retry |
+
+Run the dev server:
+
+```bash
+npm run dev
+```
+
+Or build for production:
+
+```bash
+npm run build
+```
+
+---
+
 ## Workflow Step Types
 
 | Type | Description |
@@ -189,10 +216,10 @@ docker compose exec app php artisan test
 ```
 
 ```
-Tests: 68 passed (183 assertions)
+Tests: 93 passed (289 assertions)
 ```
 
-Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async job execution, AI provider fakes, HMAC webhook verification, scheduled trigger firing, and notification step delivery.
+Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async job execution, AI provider fakes, HMAC webhook verification, scheduled trigger firing, notification step delivery, Stripe plan limit enforcement, and Inertia.js web UI flows.
 
 ---
 
@@ -207,15 +234,15 @@ Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async
 | v0.5.0 | Inbound webhooks with HMAC verification | ✅ Done |
 | v0.6.0 | Scheduled triggers, notification steps | ✅ Done |
 | v0.7.0 | Stripe billing, subscription plans, usage metering | ✅ Done |
-| v0.8.0 | React frontend — workflow builder UI | 🔨 Next |
-| v0.9.0 | Flutter mobile app | 📋 Planned |
+| v0.8.0 | React + TypeScript + Inertia.js frontend | ✅ Done |
+| v0.9.0 | Flutter mobile app | 🔨 Next |
 | v1.0.0 | CI/CD, Railway/AWS deployment, OpenAPI docs | 📋 Planned |
 
 ---
 
 ## Laravel Skills Demonstrated
 
-`Queues` `Jobs` `Bus::batch()` `Events` `Scheduling` `Artisan Commands` `API Resources` `Sanctum` `Policies` `Webhooks` `HMAC Verification` `Horizon` `Redis` `Multi-tenancy` `Eloquent Global Scopes` `Encrypted Casts` `Strategy Pattern` `Service Container` `Mail` `Notifications` `Docker` `Testing`
+`Queues` `Jobs` `Bus::batch()` `Events` `Scheduling` `Artisan Commands` `API Resources` `Sanctum` `Policies` `Webhooks` `HMAC Verification` `Horizon` `Redis` `Multi-tenancy` `Eloquent Global Scopes` `Encrypted Casts` `Strategy Pattern` `Service Container` `Mail` `Notifications` `Docker` `Testing` `Inertia.js` `React 18` `TypeScript` `Vite`
 
 ---
 
