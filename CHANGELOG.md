@@ -9,9 +9,42 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 ## [Unreleased]
 
 ### Planned
-- React workflow builder UI (v0.8.0) — [#9](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/9)
 - Flutter mobile app (v0.9.0) — [#10](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/10)
 - Production deployment, CI/CD, monitoring, OpenAPI docs (v1.0.0) — [#11](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/11)
+
+---
+
+## [0.8.0] — 2026-07-22
+
+### Added
+- **Inertia.js v3** (`inertiajs/inertia-laravel`) + **React 18** + **TypeScript** frontend stack
+- **`vite.config.ts`** — migrated from JS, `@vitejs/plugin-react` v4 for Vite 6 compatibility
+- **`tsconfig.json`** — strict mode, `@/*` path alias mapped to `resources/js/`
+- **`HandleInertiaRequests` middleware** — shares `auth.user`, `auth.tenant`, and `flash` to every page automatically; registered in web middleware group
+- **`GuestLayout`** — centered card layout for auth pages
+- **`AppLayout`** — fixed sidebar with nav links, user avatar, tenant name, sign-out; active link highlighting
+- **`Badge` component** — auto-maps status strings (`active`, `failed`, `running`, etc.) to colour variants
+- **`Button` component** — primary / secondary / danger variants
+- **Pages**:
+  - `Auth/Login` — email/password, Inertia validation errors, redirect on success
+  - `Auth/Register` — organisation name + user details; calls `RegisterTenantAction` atomically
+  - `Dashboard` — stat cards (total/active workflows, executions today, failures today), plan usage bars with over-limit warning, recent execution list with status badges
+  - `Workflows/Index` — list with status/trigger badges, run button for active workflows, empty state
+  - `Workflows/Create` — name, description, trigger type radio selector
+  - `Workflows/Show` — step list with order badges, execution history table with retry button, activate/pause/run action buttons
+- **Web controllers** (separate from API — API routes untouched):
+  - `Web/AuthController` — session-based login/register/logout
+  - `Web/DashboardController` — aggregates stats + usage for dashboard props
+  - `Web/WorkflowController` — CRUD + activate/pause/execute via Inertia redirects
+- **TypeScript types** (`resources/js/types/index.d.ts`) — `User`, `Tenant`, `Workflow`, `WorkflowStep`, `Execution`, `ExecutionLog`, `PlanUsage`, `PageProps<T>`
+- **`TestCase::withoutCsrf()`** helper — disables `ValidateCsrfToken` for web POST tests without removing session/auth middleware
+
+### Build output
+- 13 chunks, 323 kB JS (102 kB gzipped), 25 kB CSS
+
+### Tests
+- 14 new tests — Inertia component assertions, web auth flow, workflow CRUD + execute via web
+- **Total: 93 tests, 289 assertions**
 
 ---
 
