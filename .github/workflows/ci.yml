@@ -57,27 +57,41 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-      - name: Copy .env
-        run: cp .env.example .env
+      - name: Create .env for CI
+        run: |
+          cat > .env << 'EOF'
+          APP_NAME=FlowForge
+          APP_ENV=testing
+          APP_KEY=
+          APP_DEBUG=true
+          APP_URL=http://localhost
+
+          DB_CONNECTION=pgsql
+          DB_HOST=127.0.0.1
+          DB_PORT=5432
+          DB_DATABASE=flowforge_test
+          DB_USERNAME=flowforge
+          DB_PASSWORD=secret
+
+          REDIS_HOST=127.0.0.1
+          REDIS_PORT=6379
+
+          QUEUE_CONNECTION=sync
+          CACHE_STORE=array
+          SESSION_DRIVER=array
+
+          STRIPE_KEY=pk_test_fake
+          STRIPE_SECRET=sk_test_fake
+          STRIPE_WEBHOOK_SECRET=whsec_fake
+          STRIPE_PRICE_PRO=price_fake_pro
+          STRIPE_PRICE_ENTERPRISE=price_fake_enterprise
+
+          MAIL_MAILER=array
+          EOF
+          sed -i 's/^          //' .env
 
       - name: Generate app key
         run: php artisan key:generate
-
-      - name: Configure test environment
-        run: |
-          echo "DB_CONNECTION=pgsql" >> .env
-          echo "DB_HOST=127.0.0.1" >> .env
-          echo "DB_PORT=5432" >> .env
-          echo "DB_DATABASE=flowforge_test" >> .env
-          echo "DB_USERNAME=flowforge" >> .env
-          echo "DB_PASSWORD=secret" >> .env
-          echo "REDIS_HOST=127.0.0.1" >> .env
-          echo "REDIS_PORT=6379" >> .env
-          echo "QUEUE_CONNECTION=sync" >> .env
-          echo "CACHE_STORE=array" >> .env
-          echo "SESSION_DRIVER=array" >> .env
-          echo "STRIPE_KEY=pk_test_fake" >> .env
-          echo "STRIPE_SECRET=sk_test_fake" >> .env
 
       - name: Run migrations
         run: php artisan migrate --force
