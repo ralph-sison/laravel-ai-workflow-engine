@@ -196,6 +196,27 @@ npm run build
 
 ---
 
+## Mobile
+
+Flutter 3.44 app in `mobile/` — monitors workflows and triggers runs on the go.
+
+```bash
+cd mobile
+flutter run
+```
+
+| Screen | Description |
+|---|---|
+| Login | Sanctum token auth, persisted in secure storage |
+| Dashboard | Workflow stats, recent list |
+| Workflows | Full list with status/trigger badges, pull-to-refresh |
+| Workflow Detail | Execution history, **Run Now** button |
+| Execution Detail | Per-step logs, duration, error display |
+
+**State management**: Riverpod · **HTTP**: Dio · **Navigation**: go_router
+
+---
+
 ## Workflow Step Types
 
 | Type | Description |
@@ -235,8 +256,8 @@ Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async
 | v0.6.0 | Scheduled triggers, notification steps | ✅ Done |
 | v0.7.0 | Stripe billing, subscription plans, usage metering | ✅ Done |
 | v0.8.0 | React + TypeScript + Inertia.js frontend | ✅ Done |
-| v0.9.0 | Flutter mobile app | 🔨 Next |
-| v1.0.0 | CI/CD, Railway/AWS deployment, OpenAPI docs | 📋 Planned |
+| v0.9.0 | Flutter mobile app | ✅ Done |
+| v1.0.0 | CI/CD, Railway/AWS deployment, OpenAPI docs | 🔨 Next |
 
 ---
 
