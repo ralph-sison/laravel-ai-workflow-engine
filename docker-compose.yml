@@ -1,0 +1,121 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: flowforge_app
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - flowforge
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: flowforge_nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_HOST_PORT:-8880}:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - flowforge
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: flowforge_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-flowforge}
+      POSTGRES_USER: ${DB_USERNAME:-flowforge}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_HOST_PORT:-5440}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-flowforge}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - flowforge
+
+  redis:
+    image: redis:7-alpine
+    container_name: flowforge_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-secret}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_HOST_PORT:-6381}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-secret}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - flowforge
+
+  horizon:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: flowforge_horizon
+    restart: unless-stopped
+    command: php artisan horizon
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    depends_on:
+      - app
+      - redis
+    networks:
+      - flowforge
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: flowforge_scheduler
+    restart: unless-stopped
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+    depends_on:
+      - app
+      - postgres
+    networks:
+      - flowforge
+
+volumes:
+  postgres_data:
+  redis_data:
+  vendor:
+
+networks:
+  flowforge:
+    driver: bridge

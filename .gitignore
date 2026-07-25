@@ -8,10 +8,12 @@
 /storage/app/
 /storage/framework/
 /storage/logs/
+/storage/pail/
 .env
 .env.backup
 .env.production
 .phpunit.result.cache
+.phpunit.cache
 Homestead.json
 Homestead.yaml
 auth.json
@@ -24,6 +26,9 @@ docker-compose.override.yml
 # IDE
 .idea/
 .vscode/
+.fleet/
+.nova/
+.zed/
 *.swp
 *.swo
 .DS_Store
