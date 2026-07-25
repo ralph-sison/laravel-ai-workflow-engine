@@ -79,6 +79,12 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Prepare storage directories
+        run: |
+          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p storage/logs
+          chmod -R 775 storage bootstrap/cache
+
       - name: Run migrations
         run: php artisan migrate --force
 
