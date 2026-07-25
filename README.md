@@ -8,7 +8,7 @@
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=flat&logo=redis)](https://redis.io)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker)](https://docker.com)
 [![Tests](https://img.shields.io/badge/tests-93%20passing-brightgreen)](#testing)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 
 ---
 
@@ -269,4 +269,13 @@ Test coverage spans authentication, multi-tenant isolation, workflow CRUD, async
 
 ## License
 
-MIT
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+This means:
+- You may use, study, and modify this code freely
+- If you distribute it or run it as a network service (SaaS), you **must** release your modifications under the same license
+- **Commercial use requires a separate agreement** — contact Ralph Sison before using this in a commercial product or selling it to clients
+
+For commercial licensing enquiries: ralph.sison@gmail.com
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
