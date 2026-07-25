@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DocsController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ConnectorController;
 use App\Http\Controllers\Api\V1\ExecutionController;
@@ -12,6 +13,10 @@ use App\Http\Controllers\Api\V1\WorkflowController;
 use App\Http\Controllers\Api\V1\WorkflowStepController;
 use App\Http\Middleware\EnforcePlanLimits;
 use Illuminate\Support\Facades\Route;
+
+// API documentation (public, no auth)
+Route::get('/docs', [DocsController::class, 'ui']);
+Route::get('/docs/openapi.yaml', [DocsController::class, 'spec']);
 
 Route::prefix('v1')->group(function () {
 
