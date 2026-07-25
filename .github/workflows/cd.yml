@@ -8,13 +8,14 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
+    # Only runs when RAILWAY_TOKEN secret is configured in repository settings
+    if: ${{ vars.RAILWAY_DEPLOY_ENABLED == 'true' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Deploy to Railway
-        if: ${{ secrets.RAILWAY_TOKEN != '' }}
         uses: bervProject/railway-deploy@main
         with:
           railway_token: ${{ secrets.RAILWAY_TOKEN }}
