@@ -79,9 +79,12 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Clear caches
+        run: php artisan config:clear && php artisan view:clear
+
       - name: Prepare storage directories
         run: |
-          mkdir -p storage/framework/{sessions,views,cache}
+          mkdir -p storage/framework/{sessions,views,cache/data}
           mkdir -p storage/logs
           chmod -R 775 storage bootstrap/cache
 
