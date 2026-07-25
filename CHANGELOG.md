@@ -9,8 +9,33 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Version
 ## [Unreleased]
 
 ### Planned
-- Flutter mobile app (v0.9.0) — [#10](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/10)
 - Production deployment, CI/CD, monitoring, OpenAPI docs (v1.0.0) — [#11](https://github.com/ralph-sison/laravel-ai-workflow-engine/issues/11)
+
+---
+
+## [0.9.0] — 2026-07-24
+
+### Added
+- **Flutter 3.44 mobile app** in `mobile/` — lives inside the monorepo alongside the Laravel backend and React frontend, visible on the same GitHub repo
+- **Packages**: `flutter_riverpod` (state), `dio` (HTTP), `flutter_secure_storage` (token persistence), `go_router` (navigation), `intl`, Material 3 theme
+- **Auth flow**: Sanctum token login → stored in `flutter_secure_storage` → auto-restored on next launch via `authProvider` (AsyncNotifier) validating against `/api/v1/me`; unauthenticated users redirected to login via go_router redirect hook
+- **`ApiClient` (Dio)**: typed methods for login, logout, me, workflows list, executions list, execution detail, manual trigger
+- **Riverpod providers**: `authProvider`, `workflowsProvider`, `executionsProvider` (family), `executionDetailProvider` (family), `triggerWorkflowProvider` (family)
+- **Screens**:
+  - `LoginScreen` — email/password form, loading state, error display
+  - `DashboardScreen` — stat cards (total/active workflows), recent workflow list, pull-to-refresh
+  - `WorkflowsScreen` — full list with `WorkflowCard`, pull-to-refresh
+  - `WorkflowDetailScreen` — status/trigger badges, execution history list, **Run Now** button (triggers via API, refreshes list)
+  - `ExecutionDetailScreen` — per-step logs with status badge, duration, error display
+- **Widgets**: `StatusBadge` (auto colour-maps status strings), `WorkflowCard` (tap → detail)
+- **`go_router`**: declarative auth-gated routing — unauthenticated users redirected to `/login`
+
+### Architecture decision
+Consumes existing `/api/v1/` endpoints — zero new backend code required. Read-only monitoring + manual trigger only; the full workflow builder is the web UI's responsibility.
+
+### Tests
+- `flutter analyze` — 0 issues
+- `flutter test` — 1 test passing (app boots, router redirects unauthenticated user to login)
 
 ---
 
